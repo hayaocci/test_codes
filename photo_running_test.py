@@ -111,7 +111,7 @@ def image_guided_driving(angle, area_ratio):
         motor.stop(0.1)
         area_ratio, angle = goal_detection()
     print("ゴールを捉えました。ゴールへ向かいます。")
-    
+
     while 0 < area_ratio < 80:
         #cansatの真正面にゴールがないとき
         while angle =! 3:
@@ -135,15 +135,12 @@ def image_guided_driving(angle, area_ratio):
             t_running = 0.1
         
         motor.move(30, 30, t_running)
-        motor.decelaration(10, 10)
         motor.motor_stop(1)
 
         area_ratio, angle = goal_detection()
 
     print("目的地周辺に到着しました。案内を終了します。")
     print("お疲れさまでした。")
-    
-    exit()
 
 
 if __name__ == "__main__":
