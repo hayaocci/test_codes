@@ -46,6 +46,26 @@ def detect_red(small_img):
 def get_contours(mask):
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
+    #最大の輪郭を抽出
+    max_contour = max(contours, key = cv2.contourArea)
+
+    #最大輪郭の重心を求める
+    # 重心の計算
+    m = cv2.moments(max_contour)
+    x,y= m['m10']/m['m00'] , m['m01']/m['m00']
+    print(f"Weight Center = ({x}, {y})")
+    # 座標を四捨五入
+    x, y = round(x), round(y)
+    # 重心位置に x印を書く
+    cv2.line(original_img, (x-5,y-5), (x+5,y+5), (0, 0, 255), 2)
+    cv2.line(original_img, (x+5,y-5), (x-5,y+5), (0, 0, 255), 2)
+
+    cv2.drawContours(original_img, [max_contour], -1, (0, 0, 255), thickness=2)
+
+
+
+    return original_img
+    '''
     max_contour = max(contours, key=lambda x: cv2.contourArea(x))
 
     # 全ての輪郭を描画
@@ -68,7 +88,7 @@ def get_contours(mask):
                     radius_frame = cv2.circle(masked_img,center,radius,(0,255,0),2)
          
     return original_img, radius_frame
-
+    '''
 if __name__ == "__main__":
     mosaic_img = mosaic(original_img)
     cv2.imshow('mosaic', mosaic_img)
@@ -79,7 +99,13 @@ if __name__ == "__main__":
     mask, masked_img = detect_red(mosaic_img)
     cv2.imwrite('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\masked_img.jpg', masked_img)
 
-    r = 10
-    original_img, radius_frame = get_contours(mask)
+    get_contours(mask)
+
+    original_img = get_contours(mask)
     cv2.imwrite('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\max_contour.jpg', original_img)
-    cv2.imwrite('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\contours.jpg', radius_frame)
+
+
+    # r = 10
+    # original_img, radius_frame = get_contours(mask)
+    # cv2.imwrite('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\max_contour.jpg', original_img)
+    # cv2.imwrite('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\contours.jpg', radius_frame)
