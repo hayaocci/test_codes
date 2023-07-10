@@ -1,29 +1,13 @@
 import numpy as np
 import cv2
+#import motor
 
-
-
-#濃淡画像のノイズ処理
-#def noise_reduction(img):
-    
-
-#BGR色検知 (opencvではRGBではなくBGRであることに注意)
-# def BGR_detect(img, BGR, threshold):
-#     #BGRの値を取得
-#     bgr = img[BGR[0], BGR[1]]
-#     #print(bgr)
-#     #BGRの値を閾値で比較
-#     if bgr[0] > threshold[0] and bgr[1] > threshold[1] and bgr[2] > threshold[2]:
-#         return True
-#     else:
-#         return False
-
-original_img = cv2.imread('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\ImageGuide-0153.jpg')
-
-def mosaic(original_img, ratio=0.05):
+#細かいノイズを除去するために画像を圧縮
+def mosaic(original_img, ratio=0.1):
     small_img = cv2.resize(original_img, None, fx=ratio, fy=ratio, interpolation=cv2.INTER_NEAREST)
     return cv2.resize(small_img, original_img.shape[:2][::-1], interpolation=cv2.INTER_NEAREST)
 
+#赤色検出
 def detect_red(small_img):
     # HSV色空間に変換
     hsv_img = cv2.cvtColor(small_img, cv2.COLOR_BGR2HSV)
@@ -43,7 +27,8 @@ def detect_red(small_img):
     masked_img = cv2.bitwise_and(small_img, small_img, mask=mask)
     return mask, masked_img
 
-def get_contours(mask):
+#赤色の重心を求める
+def get_center(mask):
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
     #最大の輪郭を抽出
@@ -57,39 +42,90 @@ def get_contours(mask):
     # 座標を四捨五入
     x, y = round(x), round(y)
     # 重心位置に x印を書く
-    cv2.line(original_img, (x-5,y-5), (x+5,y+5), (0, 0, 255), 2)
-    cv2.line(original_img, (x+5,y-5), (x-5,y+5), (0, 0, 255), 2)
+    cv2.line(original_img, (x-5,y-5), (x+5,y+5), (0, 255, 0), 2)
+    cv2.line(original_img, (x+5,y-5), (x-5,y+5), (0, 255, 0), 2)
 
-    cv2.drawContours(original_img, [max_contour], -1, (0, 0, 255), thickness=2)
+    cv2.drawContours(original_img, [max_contour], -1, (0, 255, 0), thickness=2)
 
+    return original_img, max_contour, x, y
 
+def get_area(max_contour):
+    #輪郭の面積を計算
+    area = cv2.contourArea(max_contour)
+    img_area = original_img.shape[0] * original_img.shape[1] #画像の縦横の積
+    area_ratio = area / img_area * 100 #面積の割合を計算
+    if area_ratio < 1.0:
+        area_ratio = 0.0
+    print(f"Area ratio = {area_ratio:.1f}%")
+    return area_ratio
 
-    return original_img
-    '''
-    max_contour = max(contours, key=lambda x: cv2.contourArea(x))
+def get_angle(x, y):
+    #重心から現在位置とゴールの相対角度を大まかに計算
+    img_width = original_img.shape[1]
+    quat_width = img_width / 5
+    x0, x1, x2, x3, x4, x5 = 0, quat_width, quat_width*2, quat_width*3, quat_width*4, quat_width*5
 
-    # 全ての輪郭を描画
-    cv2.drawContours(original_img, [max_contour], -1, (0, 0, 255), thickness=2)
-
-    # 輪郭の点の描画
-    for contour in contours:
-        for point in contour:
-            cv2.circle(original_img, point[0], 3, (0, 255, 0), -1)
+    if x0 < x <x1:
+        angle = 1
+    elif x1 < x < x2:
+        angle = 2
+    elif x2 < x < x3:
+        angle = 3
+    elif x3 < x < x4:
+        angle = 4
+    elif x4 < x < x5:
+        angle = 5
     
-        #一つ以上検出
-        if len(contours) > 0:
-            for cnt in contours:
-                # 最小外接円を描く
-                (x,y), radius = cv2.minEnclosingCircle(cnt)
-                center = (int(x),int(y))
-                radius = int(radius)
- 
-                if radius > r:
-                    radius_frame = cv2.circle(masked_img,center,radius,(0,255,0),2)
-         
-    return original_img, radius_frame
-    '''
+    print("angle = ", angle)
+
+    return angle
+
+def image_guided_driving(angle, area_ratio):
+    while area_ratio == 0:
+        
+
+    while area_ratio <80:
+        area_ratio = get_area(max_contour)
+        
+
+        while area_ratio == 0:
+            print("ゴールが見つかりません。回転します。")
+            motor.move(40, -40, 0.1)
+            area_ratio = get_area(max_contour)
+        print("ゴールを捉えました。ゴールへ向かいます。")
+
+    #cansatの真正面にゴールがないとき
+    while angle =! 3:
+        if angle == 1:
+            motor.move(-20, 20, 0.5)
+        elif angle == 2:
+            motor.move(-20, 20, 0,3)
+        elif angle == 4:
+            motor.move(20, -20, 0.3)
+        elif angle == 5:
+            motor.move(20, -20, 0.5)
+
+    #cansatの真正面にゴールがあるとき
+    if 60 < area_ratio <= 80:
+        t_running = 0.5
+    elif 40 < area_ratio <= 60:
+        t_running = 0.3
+    elif 0 < area_ratio <= 40:
+        t_running = 0.1
+
+    motor.move(30, 30, t_running)
+    motor.decelaration(10, 10)
+    motor.motor_stop(1)
+    
+
+    print("目的地周辺に到着しました。案内を終了します。")
+    print("お疲れさまでした。")
+    
+
+
+
 if __name__ == "__main__":
+    original_img = cv2.imread('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\ImageGuide-0002.jpg')
     mosaic_img = mosaic(original_img)
     cv2.imshow('mosaic', mosaic_img)
     
@@ -99,13 +135,11 @@ if __name__ == "__main__":
     mask, masked_img = detect_red(mosaic_img)
     cv2.imwrite('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\masked_img.jpg', masked_img)
 
-    get_contours(mask)
-
-    original_img = get_contours(mask)
+    #対象物とその重心を描画した画像を保存
+    original_img, max_contour, x, y = get_center(mask)
     cv2.imwrite('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\max_contour.jpg', original_img)
 
+    #赤色が占める割合を計算
+    get_area(max_contour)
 
-    # r = 10
-    # original_img, radius_frame = get_contours(mask)
-    # cv2.imwrite('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\max_contour.jpg', original_img)
-    # cv2.imwrite('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\contours.jpg', radius_frame)
+    get_angle(x,y)
