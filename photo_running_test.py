@@ -1,6 +1,8 @@
 import numpy as np
 import cv2
-#import motor
+import motor
+import take
+import sys
 
 #細かいノイズを除去するために画像を圧縮
 def mosaic(original_img, ratio=0.1):
@@ -80,15 +82,34 @@ def get_angle(cx, cy):
 
     return angle
 
-def image_guided_driving(angle, area_ratio):
+def goal_detection():
+    #画像の撮影から「角度」と「占める割合」を求めるまでの一連の流れ
+    original_img = '/home/dendenmushi/cansat2023/sequence/photo_imageguide/ImageGuide-'
+    photoname = take.picture(original_img)
+    original_img = cv2.imread(photoname)
 
+    #画像を圧縮
+    small_img = mosaic(original_img, ratio=0.1)
+    
+    mask, masked_img = detect_red(small_img)
+
+    original_img, max_contour, cx, cy = get_center(mask)
+
+    #赤が占める割合を求める
     area_ratio = get_area(max_contour)
+
+    #重心から現在位置とゴールの相対角度を大まかに計算
+    angle = get_angle(cx, cy)
+
+    return area_ratio, angle
+
+def image_guided_driving(angle, area_ratio):
 
     while area_ratio == 0:
         print("ゴールが見つかりません。回転します。")
         motor.move(40, -40, 0.1)
         motor.stop(0.1)
-        area_ratio = get_area(max_contour)
+        area_ratio, angle = goal_detection()
     print("ゴールを捉えました。ゴールへ向かいます。")
     
     while area_ratio < 80:
@@ -102,6 +123,8 @@ def image_guided_driving(angle, area_ratio):
                 motor.move(20, -20, 0.3)
             elif angle == 5:
                 motor.move(20, -20, 0.5)
+            
+            area_ratio, angle = goal_detection()
 
         #cansatの真正面にゴールがあるとき
         if 60 < area_ratio <= 80:
@@ -115,31 +138,45 @@ def image_guided_driving(angle, area_ratio):
         motor.decelaration(10, 10)
         motor.motor_stop(1)
 
-        area_ratio = get_area(max_contour)
-    
+        area_ratio, angle = goal_detection()
 
     print("目的地周辺に到着しました。案内を終了します。")
     print("お疲れさまでした。")
     
-
+    exit()
 
 
 if __name__ == "__main__":
+
+
+    try:
+        area_ratio, angle = goal_detection()
+        image_guided_driving(angle, area_ratio)
+    except KeyboardInterrupt:
+        print("stop")
+    except Exception as e:
+        tb = sys.exc_info()[2]
+
+
+
+
+
+    
     original_img = cv2.imread('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\ImageGuide-0002.jpg')
-    mosaic_img = mosaic(original_img)
-    cv2.imshow('mosaic', mosaic_img)
+    # mosaic_img = mosaic(original_img)
+    # cv2.imshow('mosaic', mosaic_img)
     
-    #画僧の保存
-    cv2.imwrite('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\mosaic.jpg', mosaic_img)
+    # #画僧の保存
+    # cv2.imwrite('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\mosaic.jpg', mosaic_img)
     
-    mask, masked_img = detect_red(mosaic_img)
-    cv2.imwrite('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\masked_img.jpg', masked_img)
+    # mask, masked_img = detect_red(mosaic_img)
+    # cv2.imwrite('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\masked_img.jpg', masked_img)
 
-    #対象物とその重心を描画した画像を保存
-    original_img, max_contour, cx, cy = get_center(mask)
-    cv2.imwrite('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\max_contour.jpg', original_img)
+    # #対象物とその重心を描画した画像を保存
+    # original_img, max_contour, cx, cy = get_center(mask)
+    # cv2.imwrite('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\max_contour.jpg', original_img)
 
-    #赤色が占める割合を計算
-    get_area(max_contour)
+    # #赤色が占める割合を計算
+    # get_area(max_contour)
 
-    get_angle(cx,cy)
+    # get_angle(cx,cy)
