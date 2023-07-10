@@ -37,17 +37,17 @@ def get_center(mask):
     #最大輪郭の重心を求める
     # 重心の計算
     m = cv2.moments(max_contour)
-    x,y= m['m10']/m['m00'] , m['m01']/m['m00']
-    print(f"Weight Center = ({x}, {y})")
+    cx,cy= m['m10']/m['m00'] , m['m01']/m['m00']
+    print(f"Weight Center = ({cx}, {cy})")
     # 座標を四捨五入
-    x, y = round(x), round(y)
+    cx, cy = round(cx), round(cy)
     # 重心位置に x印を書く
-    cv2.line(original_img, (x-5,y-5), (x+5,y+5), (0, 255, 0), 2)
-    cv2.line(original_img, (x+5,y-5), (x-5,y+5), (0, 255, 0), 2)
+    cv2.line(original_img, (cx-5,cy-5), (cx+5,cy+5), (0, 255, 0), 2)
+    cv2.line(original_img, (cx+5,cy-5), (cx-5,cy+5), (0, 255, 0), 2)
 
     cv2.drawContours(original_img, [max_contour], -1, (0, 255, 0), thickness=2)
 
-    return original_img, max_contour, x, y
+    return original_img, max_contour, cx, cy
 
 def get_area(max_contour):
     #輪郭の面積を計算
@@ -59,21 +59,21 @@ def get_area(max_contour):
     print(f"Area ratio = {area_ratio:.1f}%")
     return area_ratio
 
-def get_angle(x, y):
+def get_angle(cx, cy):
     #重心から現在位置とゴールの相対角度を大まかに計算
     img_width = original_img.shape[1]
     quat_width = img_width / 5
     x0, x1, x2, x3, x4, x5 = 0, quat_width, quat_width*2, quat_width*3, quat_width*4, quat_width*5
 
-    if x0 < x <x1:
+    if x0 < cx <x1:
         angle = 1
-    elif x1 < x < x2:
+    elif x1 < cx < x2:
         angle = 2
-    elif x2 < x < x3:
+    elif x2 < cx < x3:
         angle = 3
-    elif x3 < x < x4:
+    elif x3 < cx < x4:
         angle = 4
-    elif x4 < x < x5:
+    elif x4 < cx < x5:
         angle = 5
     
     print("angle = ", angle)
@@ -81,41 +81,41 @@ def get_angle(x, y):
     return angle
 
 def image_guided_driving(angle, area_ratio):
+
+    area_ratio = get_area(max_contour)
+
     while area_ratio == 0:
-        
-
-    while area_ratio <80:
+        print("ゴールが見つかりません。回転します。")
+        motor.move(40, -40, 0.1)
+        motor.stop(0.1)
         area_ratio = get_area(max_contour)
+    print("ゴールを捉えました。ゴールへ向かいます。")
+    
+    while area_ratio < 80:
+        #cansatの真正面にゴールがないとき
+        while angle =! 3:
+            if angle == 1:
+                motor.move(-20, 20, 0.5)
+            elif angle == 2:
+                motor.move(-20, 20, 0,3)
+            elif angle == 4:
+                motor.move(20, -20, 0.3)
+            elif angle == 5:
+                motor.move(20, -20, 0.5)
+
+        #cansatの真正面にゴールがあるとき
+        if 60 < area_ratio <= 80:
+            t_running = 0.5
+        elif 40 < area_ratio <= 60:
+            t_running = 0.3
+        elif 0 < area_ratio <= 40:
+            t_running = 0.1
         
+        motor.move(30, 30, t_running)
+        motor.decelaration(10, 10)
+        motor.motor_stop(1)
 
-        while area_ratio == 0:
-            print("ゴールが見つかりません。回転します。")
-            motor.move(40, -40, 0.1)
-            area_ratio = get_area(max_contour)
-        print("ゴールを捉えました。ゴールへ向かいます。")
-
-    #cansatの真正面にゴールがないとき
-    while angle =! 3:
-        if angle == 1:
-            motor.move(-20, 20, 0.5)
-        elif angle == 2:
-            motor.move(-20, 20, 0,3)
-        elif angle == 4:
-            motor.move(20, -20, 0.3)
-        elif angle == 5:
-            motor.move(20, -20, 0.5)
-
-    #cansatの真正面にゴールがあるとき
-    if 60 < area_ratio <= 80:
-        t_running = 0.5
-    elif 40 < area_ratio <= 60:
-        t_running = 0.3
-    elif 0 < area_ratio <= 40:
-        t_running = 0.1
-
-    motor.move(30, 30, t_running)
-    motor.decelaration(10, 10)
-    motor.motor_stop(1)
+        area_ratio = get_area(max_contour)
     
 
     print("目的地周辺に到着しました。案内を終了します。")
@@ -136,10 +136,10 @@ if __name__ == "__main__":
     cv2.imwrite('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\masked_img.jpg', masked_img)
 
     #対象物とその重心を描画した画像を保存
-    original_img, max_contour, x, y = get_center(mask)
+    original_img, max_contour, cx, cy = get_center(mask)
     cv2.imwrite('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\max_contour.jpg', original_img)
 
     #赤色が占める割合を計算
     get_area(max_contour)
 
-    get_angle(x,y)
+    get_angle(cx,cy)
