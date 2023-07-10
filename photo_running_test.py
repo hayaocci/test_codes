@@ -112,7 +112,7 @@ def image_guided_driving(angle, area_ratio):
         area_ratio, angle = goal_detection()
     print("ゴールを捉えました。ゴールへ向かいます。")
     
-    while area_ratio < 80:
+    while 0 < area_ratio < 80:
         #cansatの真正面にゴールがないとき
         while angle =! 3:
             if angle == 1:
