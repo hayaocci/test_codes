@@ -3,6 +3,7 @@ import cv2
 import motor
 import take
 import sys
+import gps_navigate
 
 #細かいノイズを除去するために画像を圧縮
 def mosaic(original_img, ratio=0.1):
@@ -73,6 +74,7 @@ def get_area(max_contour, original_img):
     return area_ratio
 
 def get_angle(cx, cy, original_img):
+    angle_beta = 0
     #重心から現在位置とゴールの相対角度を大まかに計算
     img_width = original_img.shape[1]
     quat_width = img_width / 5
@@ -115,6 +117,7 @@ def detect_goal():
     return area_ratio, angle_beta
 
 def image_guided_driving(area_ratio, angle_beta):
+    t_running = 0
     area_ratio, angle_beta = detect_goal()
 
     try:
@@ -126,13 +129,14 @@ def image_guided_driving(area_ratio, angle_beta):
         
         area_ratio, angle_beta = detect_goal()
 
-        while 0 < area_ratio < 80:
+        while 0 < area_ratio < 100:
+
             #cansatの真正面にゴールがないとき
             while angle_beta != 3:
                 if angle_beta == 1:
                     motor.move(-20, 20, 0.5)
                 elif angle_beta == 2:
-                    motor.move(-20, 20, 0,3)
+                    motor.move(-20, 20, 0.3)
                 elif angle_beta == 4:
                     motor.move(20, -20, 0.3)
                 elif angle_beta == 5:
@@ -153,6 +157,10 @@ def image_guided_driving(area_ratio, angle_beta):
             motor.move(30, 30, t_running)
 
             area_ratio, angle_beta = detect_goal()
+        else:
+            print("ゴールを見失いました。ゴールを捉えるまで回転します。")
+            
+        
 
         print("目的地周辺に到着しました。案内を終了します。")
         print("お疲れさまでした。")
@@ -164,6 +172,7 @@ def image_guided_driving(area_ratio, angle_beta):
 
 
 if __name__ == "__main__":
+
     try:
         angle_beta = 0
         motor.setup()
