@@ -84,8 +84,8 @@ def get_angle(cx, cy):
 
 def goal_detection():
     #画像の撮影から「角度」と「占める割合」を求めるまでの一連の流れ
-    original_img = '/home/dendenmushi/cansat2023/sequence/photo_imageguide/ImageGuide-'
-    photoname = take.picture(original_img)
+    original_img_path = '/home/dendenmushi/cansat2023/sequence/photo_imageguide/ImageGuide-'
+    photoname = take.picture(original_img_path)
     original_img = cv2.imread(photoname)
 
     #画像を圧縮
