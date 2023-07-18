@@ -159,7 +159,7 @@ if __name__ == "__main__":
 
 
     
-    original_img = cv2.imread('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\ImageGuide-0002.jpg')
+    original_img = cv2.imread('C:\\Users\\taguc\\workspace_cansat\\goal_imgs\\ImageGuide-0220.jpg')
     # mosaic_img = mosaic(original_img)
     # cv2.imshow('mosaic', mosaic_img)
     

@@ -3,7 +3,7 @@ import cv2
 import time
 
 #細かいノイズを除去するために画像を圧縮
-def mosaic(original_img, ratio=0.1):
+def mosaic(original_img, ratio=0.9):
     small_img = cv2.resize(original_img, None, fx=ratio, fy=ratio, interpolation=cv2.INTER_NEAREST)
     return cv2.resize(small_img, original_img.shape[:2][::-1], interpolation=cv2.INTER_NEAREST)
 
@@ -13,12 +13,12 @@ def detect_red(small_img):
     hsv_img = cv2.cvtColor(small_img, cv2.COLOR_BGR2HSV)
     
     # 赤色のHSVの値域1
-    red_min = np.array([0,64,0])
-    red_max = np.array([30,255,255])
+    red_min = np.array([0,105,60])
+    red_max = np.array([10,255,255])
     mask1 = cv2.inRange(hsv_img, red_min, red_max)
     
     # 赤色のHSVの値域2
-    red_min = np.array([150,127,0])
+    red_min = np.array([160,105,60])
     red_max = np.array([179,255,255])
     mask2 = cv2.inRange(hsv_img, red_min, red_max)
     
@@ -62,7 +62,7 @@ def get_area(max_contour, original_img):
         area = cv2.contourArea(max_contour)
         img_area = original_img.shape[0] * original_img.shape[1] #画像の縦横の積
         area_ratio = area / img_area * 100 #面積の割合を計算
-        if area_ratio < 1.0:
+        if area_ratio < 0.05:
             area_ratio = 0.0
         print(f"Area ratio = {area_ratio:.1f}%")
     except:
@@ -99,37 +99,36 @@ def detect_goal():
     # photoname = take.picture(path_all_photo)
     # original_img = cv2.imread(photoname)
 
-    original_img_path = './goal_imgs/ImageGuide-0002.jpg'
-    original_img = cv2.imread(original_img_path)
+    #original_img_path = './goal_imgs/ImageGuide-0002.jpg'
+    original_img = cv2.imread('ImageGuide-0153.jpg')
 
     #画像を圧縮
-    small_img = mosaic(original_img, ratio=0.1)
-    cv2.imshow("small_img", small_img)
-    time.sleep(4)
+    small_img = mosaic(original_img, ratio=0.05)
+    cv2.imwrite('small_img.jpg', small_img)
     
     #赤色であると認識させる範囲を設定
-    mask = detect_red(small_img)
+    mask, masked_img = detect_red(small_img)
 
     #圧縮した画像から重心と輪郭を求めて、画像に反映
-    draw_img, max_contour, cx, cy = get_center(mask, small_img)
-    cv2.imshow("draw_img", draw_img)
+    original_img, max_contour, cx, cy = get_center(mask, small_img)
+    cv2.imwrite('draw_img.jpg', original_img)
 
     #赤が占める割合を求める
-    area_ratio = get_area(max_contour, draw_img)
+    area_ratio = get_area(max_contour, original_img)
 
     #重心から現在位置とゴールの相対角度を大まかに計算
-    angle = get_angle(cx, cy, draw_img)
+    angle = get_angle(cx, cy, original_img)
 
     #ゴールを検出した場合に画像を保存
-    draw_img_path = './goal_imgs/draw_img.jpg'
-    if area_ratio != 0:
-        print("photo saved")
-        cv2.imwrite(draw_img_path, draw_img)
+    # draw_img_path = './goal_imgs/draw_img.jpg'
+    # if area_ratio != 0:
+    #     print("photo saved")
+    #     cv2.imwrite(draw_img_path, draw_img)
 
     return area_ratio, angle
 
 if __name__ == "__main__":
-    original_img_path = './goal_imgs/ImageGuide-0002.jpg'
+    original_img_path = 'ImageGuide-0153.jpg'
     original_img = cv2.imread(original_img_path)
 
     detect_goal()
