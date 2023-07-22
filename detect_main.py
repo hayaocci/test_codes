@@ -18,7 +18,7 @@ def detect_red(small_img):
     mask1 = cv2.inRange(hsv_img, red_min, red_max)
     
     # 赤色のHSVの値域2
-    red_min = np.array([160,105,20])
+    red_min = np.array([141,105,20])
     red_max = np.array([179,255,255])
     mask2 = cv2.inRange(hsv_img, red_min, red_max)
     
@@ -100,10 +100,10 @@ def detect_goal():
     # original_img = cv2.imread(photoname)
 
     #original_img_path = './goal_imgs/ImageGuide-0002.jpg'
-    original_img = cv2.imread('ImageGuide-0153.jpg')
+    original_img = cv2.imread('photo0022.jpg')
 
     #画像を圧縮
-    small_img = mosaic(original_img, ratio=0.05)
+    small_img = mosaic(original_img, ratio=0.3)
     cv2.imwrite('small_img.jpg', small_img)
     
     #赤色であると認識させる範囲を設定
