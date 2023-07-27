@@ -12,6 +12,26 @@ def proportional_control(theta):
 
 theta_array = []
 
+def make_theta_array(array: list, array_num: int):
+    #-----決められた数の要素を含む空配列の作成-----#
+
+    for i in range(array_num):
+        array.append(0)
+    
+    return array
+
+def theta_array(theta, array:list):
+    #-----thetaの値を蓄積する-----#
+
+    #古い要素を消去
+    del array[0]
+
+    #新しい要素を追加
+    array.append(theta)
+
+    return array
+
+
 def integral_control(theta, theta_array: list):
     #I制御
 
@@ -37,6 +57,8 @@ def differential_control(theta):
     manipulated_variable =
 
     return manipulated_variable
+
+
 
 if __name__ == "__main__":
     theta = 0.5
