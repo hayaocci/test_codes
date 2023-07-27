@@ -6,14 +6,23 @@ for i in range(20):
 
 print(array)
 
-for i in range(10):
+for i in range(20):
     del array[0]
     array.append(i)
 
 print(array)
 
-array.append(1.5)
-
 sum_array = sum(array)
 
 print(sum_array)
+
+differential_array = []
+
+for i in range(len(array)):
+    differential = array[i] - array[i-1]
+    differential_array.append(differential)
+
+del differential_array[0]
+
+print(len(differential_array))
+print("differential array ", differential_array)

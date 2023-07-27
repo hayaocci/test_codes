@@ -11,6 +11,7 @@ def proportional_control(theta):
     return manipulated_variable
 
 theta_array = []
+theta_differential_array = []
 
 def make_theta_array(array: list, array_num: int):
     #-----決められた数の要素を含む空配列の作成-----#
@@ -31,28 +32,29 @@ def theta_array(theta, array:list):
 
     return array
 
-
-def integral_control(theta, theta_array: list):
+def integral_control(theta_array: list):
     #I制御
 
     #積分係数の設定
     Ki = 0.5
 
     #thetaの積分処理
-    theta_array.append(theta)
     theta_integral = sum(theta_array)
 
     manipulated_variable = Ki * theta_integral
 
     return manipulated_variable
 
-def differential_control(theta):
+def differential_control(theta_array: list):
     #D制御
 
     #微分係数の設定
     Kd = 0.5
 
     #thetaの微分処理
+    for i in range(len(theta_array)):
+        theta_differential = theta_array[i] - theta_array[i-1]
+        theta_differential_array.append(theta_differential)
 
     manipulated_variable =
 
