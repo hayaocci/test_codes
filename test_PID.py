@@ -1,15 +1,5 @@
 #PID制御のテストコード
 
-def proportional_control(theta):
-    #-----P制御-----#
-    
-    #比例係数の設定
-    Kp = 0.5
-
-    manipulated_variable = Kp * theta
-
-    return manipulated_variable
-
 theta_array = []
 theta_differential_array = []
 
@@ -32,6 +22,16 @@ def theta_array(theta, array:list):
 
     return array
 
+def proportional_control(theta):
+    #-----P制御-----#
+    
+    #比例係数の設定
+    Kp = 0.5
+
+    mp = Kp * theta
+
+    return mp
+
 def integral_control(theta_array: list):
     #I制御
 
@@ -41,9 +41,9 @@ def integral_control(theta_array: list):
     #thetaの積分処理
     theta_integral = sum(theta_array)
 
-    manipulated_variable = Ki * theta_integral
+    mi = Ki * theta_integral
 
-    return manipulated_variable
+    return mi
 
 def differential_control(theta_array: list):
     #D制御
@@ -56,17 +56,17 @@ def differential_control(theta_array: list):
         theta_differential = theta_array[i] - theta_array[i-1]
         theta_differential_array.append(theta_differential)
 
-    manipulated_variable =
+    md =
 
-    return manipulated_variable
+    return md
 
 
 
 if __name__ == "__main__":
     theta = 0.5
-    manipulated_variable = proportional_control(theta)
-    print(manipulated_variable)
+    m = proportional_control(theta)
+    print(m)
 
     theta = 0.5
-    manipulated_variable = integral_control(theta, theta_array)
-    print(manipulated_variable)
+    m = integral_control(theta, theta_array)
+    print(m)
