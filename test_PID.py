@@ -22,11 +22,11 @@ def latest_theta_array(theta, array:list):
 
     return array
 
-def proportional_control(theta_array :list):
+def proportional_control(Kp, theta_array :list):
     #-----P制御-----#
     
     #比例係数の設定
-    Kp = 0.5
+    #Kp = 0.5
 
     #最新のthetaの値を取得
     theta_deviation = theta_array[-1]
@@ -35,11 +35,11 @@ def proportional_control(theta_array :list):
 
     return mp
 
-def integral_control(theta_array: list):
+def integral_control(Ki, theta_array: list):
     #I制御
 
     #積分係数の設定
-    Ki = 0.5
+    #Ki = 0.5
 
     #thetaの積分処理
     theta_integral = sum(theta_array)
@@ -48,11 +48,11 @@ def integral_control(theta_array: list):
 
     return mi
 
-def differential_control(theta_array: list):
+def differential_control(Kd, theta_array: list):
     #D制御
 
     #微分係数の設定
-    Kd = 0.5
+    #Kd = 0.5
 
     #thetaの微分処理
     for i in range(len(theta_array)):
@@ -67,7 +67,7 @@ def differential_control(theta_array: list):
 
     return md
 
-def PID_control(theta, theta_array: list, array_num: int=20):
+def PID_control(theta, theta_array: list, array_num: int=20, Kp=0.5, Ki=0.5, Kd=0.5):
     #-----PID制御-----#
     
     #-----初期設定-----# array_numは積分区間の設定
@@ -78,13 +78,13 @@ def PID_control(theta, theta_array: list, array_num: int=20):
         theta_array = latest_theta_array(theta, array)
 
         #-----P制御-----#
-        mp = proportional_control(theta_array)
+        mp = proportional_control(Kp, theta_array)
 
         #-----I制御-----#
-        mi = integral_control(theta_array)
+        mi = integral_control(Ki, theta_array)
 
         #-----D制御-----#
-        md = differential_control(theta_array)
+        md = differential_control(Kd, theta_array)
 
         #-----PID制御-----#
         m = mp + mi + md
