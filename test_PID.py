@@ -56,7 +56,7 @@ def differential_control(theta_array: list):
         theta_differential = theta_array[i] - theta_array[i-1]
         theta_differential_array.append(theta_differential)
 
-    md =
+    md = Kd * theta_differential[18]
 
     return md
 
