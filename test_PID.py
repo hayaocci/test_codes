@@ -11,7 +11,7 @@ def make_theta_array(array: list, array_num: int):
     
     return array
 
-def theta_array(theta, array:list):
+def latest_theta_array(theta, array:list):
     #-----thetaの値を蓄積する-----#
 
     #古い要素を消去
@@ -22,13 +22,16 @@ def theta_array(theta, array:list):
 
     return array
 
-def proportional_control(theta):
+def proportional_control(theta_array :list):
     #-----P制御-----#
     
     #比例係数の設定
     Kp = 0.5
 
-    mp = Kp * theta
+    #最新のthetaの値を取得
+    theta_deviation = theta_array[-1]
+
+    mp = Kp * theta_deviation
 
     return mp
 
@@ -53,12 +56,44 @@ def differential_control(theta_array: list):
 
     #thetaの微分処理
     for i in range(len(theta_array)):
-        theta_differential = theta_array[i] - theta_array[i-1]
-        theta_differential_array.append(theta_differential)
+        theta_differential_value = theta_array[i] - theta_array[i-1]
+        theta_differential_array.append(theta_differential_value)
 
-    md = Kd * theta_differential[18]
+    #最新のthetaの微分値を取得
+    theta_differential = theta_differential_array[-1]
+
+
+    md = Kd * theta_differential
 
     return md
+
+def PID_control(theta, theta_array: list, array_num: int=20):
+    #-----PID制御-----#
+    
+    #-----初期設定-----# array_numは積分区間の設定
+    array = make_theta_array(array, array_num)
+
+    while True:
+        #-----thetaの値を蓄積する-----#
+        theta_array = latest_theta_array(theta, array)
+
+        #-----P制御-----#
+        mp = proportional_control(theta_array)
+
+        #-----I制御-----#
+        mi = integral_control(theta_array)
+
+        #-----D制御-----#
+        md = differential_control(theta_array)
+
+        #-----PID制御-----#
+        m = mp + mi + md
+
+        return m
+    
+    theta_array = theta_array(theta, array)
+
+
 
 
 
