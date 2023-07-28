@@ -87,15 +87,9 @@ def PID_control(theta, theta_array: list, array_num: int=20, Kp=0.5, Ki=0.5, Kd=
         md = differential_control(Kd, theta_array)
 
         #-----PID制御-----#
-        m = mp + mi + md
+        m = mp + mi - md
 
         return m
-    
-    theta_array = theta_array(theta, array)
-
-
-
-
 
 if __name__ == "__main__":
     theta = 0.5
