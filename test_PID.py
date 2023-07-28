@@ -73,23 +73,22 @@ def PID_control(theta, theta_array: list, array_num: int=20, Kp=0.5, Ki=0.5, Kd=
     #-----初期設定-----# array_numは積分区間の設定
     array = make_theta_array(array, array_num)
 
-    while True:
-        #-----thetaの値を蓄積する-----#
-        theta_array = latest_theta_array(theta, array)
+    #-----thetaの値を蓄積する-----#
+    theta_array = latest_theta_array(theta, array)
 
-        #-----P制御-----#
-        mp = proportional_control(Kp, theta_array)
+    #-----P制御-----#
+    mp = proportional_control(Kp, theta_array)
 
-        #-----I制御-----#
-        mi = integral_control(Ki, theta_array)
+    #-----I制御-----#
+    mi = integral_control(Ki, theta_array)
 
-        #-----D制御-----#
-        md = differential_control(Kd, theta_array)
+    #-----D制御-----#
+    md = differential_control(Kd, theta_array)
 
-        #-----PID制御-----#
-        m = mp + mi - md
+    #-----PID制御-----#
+    m = mp + mi - md
 
-        return m
+    return m
 
 if __name__ == "__main__":
     theta = 0.5
