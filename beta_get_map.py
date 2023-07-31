@@ -70,10 +70,8 @@ def get_map(file_path, lat_goal, lon_goal):
         #軸凡例
         plt.legend()
 
+        plt.savefig('A visual control record.png', bbox_inches='tight')
         plt.show()
-
-        plt.figure(figsize=(1000, 800), dpi=10)
-        plt.savefig('A visual control record.png')
 
         print(data_2_lat)
         print(data_2_lon)
