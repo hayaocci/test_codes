@@ -24,10 +24,22 @@ def get_map(file_path):
 
 
         #-----描画処理-----#
+        #グラフのタイトル
+        plt.title("Navigation Trajectry Map")
+
+        #軸ラベル
+        plt.xlabel("Latitude")
+        plt.ylabel("Longitude")
+
+        #
+
         plt.quiver(data_2_lat, data_2_lon, cos_azimuth_array, sin_azimuth_array)
-        plt.plot(data_2_lat, data_2_lon)
+        plt.plot(data_2_lat, data_2_lon, label="Trajectry")
         plt.annotate("Start", xy=(data_2_lat[0], data_2_lon[0]), xytext=(data_2_lat[1], data_2_lon[2]), arrowprops=dict(facecolor='black', shrink=0.05))
         plt.annotate("Goal", xy=(data_2_lat[-1], data_2_lon[-1]), xytext=(data_2_lat[-1], data_2_lon[-1]))
+
+        #軸凡例
+        plt.legend()
 
         plt.show()
 
