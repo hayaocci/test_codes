@@ -11,22 +11,23 @@ def get_map(file_path):
         data_2 = [list(x) for x in zip(*data)]
         data_2_lat = [float(v) for v in data_2[0]]
         data_2_lon = [float(v) for v in data_2[1]]
-        data_2_azimuth = [float(v) for v in data_2[2]]
+        rover_azimuth = [float(v) for v in data_2[2]]
 
         cos_azimuth_array = []
         sin_azimuth_array = []
-        for i in range(8):
-            cos_azimuth = math.cos(data_2_azimuth[i])
-            sin_azimuth = math.sin(data_2_azimuth[i])
+        for i in range(len(rover_azimuth)):
+            cos_azimuth = math.cos(rover_azimuth[i])
+            sin_azimuth = math.sin(rover_azimuth[i])
             cos_azimuth_array.append(cos_azimuth)
             sin_azimuth_array.append(sin_azimuth)
-        
-        plt.barbs(data_2_lat, data_2_lon, cos_azimuth_array, sin_azimuth_array, length=5, pivot='middle')
+
+        plt.quiver(data_2_lat, data_2_lon, cos_azimuth_array, sin_azimuth_array)
+        plt.plot(data_2_lat, data_2_lon)
         plt.show()
 
         print(data_2_lat)
         print(data_2_lon)
-        print(data_2_azimuth)
+        print(rover_azimuth)
 
 
         plt.scatter(data_2_lat, data_2_lon) #, s=10, c='blue', marker='o', label='rover')
