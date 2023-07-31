@@ -27,8 +27,6 @@ def get_map(file_path, lat_goal, lon_goal):
         sin_azimuth_array[0] = 0
         cos_azimuth_array.append(0)
         sin_azimuth_array.append(0)
-        
-
 
         #-----描画処理-----#
         #グラフのタイトル
@@ -67,20 +65,15 @@ def get_map(file_path, lat_goal, lon_goal):
         plt.annotate("Target point" + "\n" + str(lat_goal) + ", "+ str(lon_goal) + ", "+ "altitude", xy=(lat_goal, lon_goal), xytext=(lat_goal - 0.000025, lon_goal - 0.000020), arrowprops=arrow_dict, bbox=text_dict)
         plt.annotate("Control start point" + "\n" + str(data_2_lat[0]) + ", "+ str(data_2_lon[0]) + ", "+ "altitude", xy=(data_2_lat[0], data_2_lon[0]), xytext=(data_2_lat[0] + 0.000005, data_2_lon[0] - 0.000020), arrowprops=arrow_dict, bbox=text_dict)
         plt.annotate("Control finish point" + "\n" + str(data_2_lat[-1]) + ", "+ str(data_2_lon[-1]) + ", "+ "altitude", xy=(data_2_lat[-1], data_2_lon[-1]), xytext=(data_2_lat[-1] - 0.000020, data_2_lon[-1] + 0.000009), arrowprops=arrow_dict, bbox=text_dict)
-
-
         plt.grid()
+
         #軸凡例
         plt.legend()
 
-
-        figsize_px = np.array([1000, 800])
-        dpi = 100
-        figsize_inch = figsize_px / dpi
-        plt.figure(figsize=figsize_inch)
-        plt.savefig("test.png")
-
         plt.show()
+
+        plt.figure(figsize=(1000, 800), dpi=10)
+        plt.savefig('A visual control record.png')
 
         print(data_2_lat)
         print(data_2_lon)
