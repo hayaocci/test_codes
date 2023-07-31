@@ -32,12 +32,19 @@ def get_map(file_path):
         plt.ylabel("Longitude")
 
         #
+        plt.scatter(data_2_lat[0], data_2_lon[0], color="blue")
+        plt.quiver(data_2_lat, data_2_lon, cos_azimuth_array, sin_azimuth_array, color="red")
+        plt.plot(data_2_lat, data_2_lon, label="Trajectry", linestyle="dashed", color="black")
+        plt.scatter(data_2_lat[0], data_2_lon[0], color="blue")
+        plt.scatter(data_2_lat[-1], data_2_lon[-1], color="red")
 
-        plt.quiver(data_2_lat, data_2_lon, cos_azimuth_array, sin_azimuth_array)
-        plt.plot(data_2_lat, data_2_lon, label="Trajectry")
-        plt.annotate("Start", xy=(data_2_lat[0], data_2_lon[0]), xytext=(data_2_lat[1], data_2_lon[2]), arrowprops=dict(facecolor='black', shrink=0.05))
-        plt.annotate("Goal", xy=(data_2_lat[-1], data_2_lon[-1]), xytext=(data_2_lat[-1], data_2_lon[-1]))
+        #
+        arrow_dict = dict(arrowstyle="simple", color="gray", connectionstyle="arc3")
+        text_dict = text_dict = dict(boxstyle="round",fc="silver", ec="mediumblue")
+        plt.annotate("Control start point" + "\n" + str(data_2_lat[0]) + ", "+ str(data_2_lat[0]) + ", "+ "altitude", xy=(data_2_lat[0], data_2_lon[0]), xytext=(data_2_lat[0] + 0.000005, data_2_lon[0] - 0.000020), arrowprops=arrow_dict, bbox=text_dict)
+        plt.annotate("Control finish point" + "\n" + str(data_2_lat[-1]) + ", "+ str(data_2_lat[-1]) + ", "+ "altitude", xy=(data_2_lat[-1], data_2_lon[-1]), xytext=(data_2_lat[-1] - 0.000020, data_2_lon[-1] + 0.000009), arrowprops=arrow_dict, bbox=text_dict)
 
+        plt.grid()
         #軸凡例
         plt.legend()
 
