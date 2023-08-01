@@ -1,9 +1,7 @@
 import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
-import numpy as np
+import matplotlib.ticker as tickers
 import csv
 import math
-import pandas as pd
 
 def get_map(file_path, lat_goal, lon_goal):
     with open(file_path) as f:
