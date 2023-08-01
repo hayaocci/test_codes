@@ -3,6 +3,7 @@ import matplotlib.ticker as ticker
 import numpy as np
 import csv
 import math
+import pandas as pd
 
 def get_map(file_path, lat_goal, lon_goal):
     with open(file_path) as f:
@@ -81,6 +82,19 @@ def get_map(file_path, lat_goal, lon_goal):
         # print(gps_lat)
         # print(gps_lon)
         # print(rover_azimuth)
+
+        #表の作成
+        plt.rcParams['font.family'] = 'Times New Roman'
+
+        fig = plt.figure()
+        ax1 = fig.add_subplot(111)
+
+        ax1.axis('off')
+        ax1.table(cellText=log_data, colLabels=['Latitude', 'Longtitude', 'theta'], loc='center')
+
+        plt.table(cellText=log_data, loc='center')
+        plt.show()
+
 
 if __name__ == '__main__':
     file_path = 'log_data.csv'
