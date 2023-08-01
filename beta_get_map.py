@@ -47,7 +47,7 @@ def get_map(file_path, lat_goal, lon_goal):
 
         plt.scatter(data_2_lat[0], data_2_lon[0], color="blue")
         plt.quiver(data_2_lat, data_2_lon, cos_azimuth_array, sin_azimuth_array, color="red")
-        plt.plot(data_2_lat, data_2_lon, label="Trajectry", linestyle="dashed", color="black")
+        plt.plot(data_2_lat, data_2_lon, label="Trajectory", linestyle="dashed", color="black")
         
         #スタート地点、ゴール地点、制御終了地点の座標の表示
         plt.scatter(data_2_lat[0], data_2_lon[0], color="blue", edgecolors="black")
