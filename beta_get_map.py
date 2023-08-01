@@ -40,11 +40,15 @@ def get_map(file_path, lat_goal, lon_goal):
         plt.xlim(lim_x1, lim_x2)
         plt.ylim(lim_y1, lim_y2)
 
+        #目盛りの設定
+        plt.gca().xaxis.get_major_formatter().set_useOffset(False)
+        plt.gca().yaxis.get_major_formatter().set_useOffset(False)
+
         #軸ラベル
         plt.xlabel("Latitude")
         plt.ylabel("Longitude")
 
-
+        #座標のプロット
         plt.scatter(data_2_lat[0], data_2_lon[0], color="blue")
         plt.quiver(data_2_lat, data_2_lon, cos_azimuth_array, sin_azimuth_array, color="red")
         plt.plot(data_2_lat, data_2_lon, label="Trajectory", linestyle="dashed", color="black")
@@ -56,20 +60,20 @@ def get_map(file_path, lat_goal, lon_goal):
 
 
 
-        #
-
-        plt.gca().xaxis.get_major_formatter().set_useOffset(False)
-        plt.gca().yaxis.get_major_formatter().set_useOffset(False)
+        #地図の説明
         arrow_dict = dict(arrowstyle="simple", color="gray", connectionstyle="arc3")
         text_dict = text_dict = dict(boxstyle="round",fc="silver", ec="mediumblue")
         plt.annotate("Target point" + "\n" + str(lat_goal) + ", "+ str(lon_goal) + ", "+ "altitude", xy=(lat_goal, lon_goal), xytext=(lat_goal - 0.000025, lon_goal - 0.000020), arrowprops=arrow_dict, bbox=text_dict)
         plt.annotate("Control start point" + "\n" + str(data_2_lat[0]) + ", "+ str(data_2_lon[0]) + ", "+ "altitude", xy=(data_2_lat[0], data_2_lon[0]), xytext=(data_2_lat[0] + 0.000005, data_2_lon[0] - 0.000020), arrowprops=arrow_dict, bbox=text_dict)
         plt.annotate("Control finish point" + "\n" + str(data_2_lat[-1]) + ", "+ str(data_2_lon[-1]) + ", "+ "altitude", xy=(data_2_lat[-1], data_2_lon[-1]), xytext=(data_2_lat[-1] - 0.000020, data_2_lon[-1] + 0.000009), arrowprops=arrow_dict, bbox=text_dict)
+        
+        #グリッドの表示
         plt.grid()
 
         #軸凡例
         plt.legend()
 
+        #地図の保存
         plt.savefig('A visual control record.png', bbox_inches='tight')
         plt.show()
 
