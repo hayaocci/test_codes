@@ -98,7 +98,7 @@ def get_map(file_path, lat_goal, lon_goal):
 
 
 if __name__ == '__main__':
-    file_path = 'test_data.csv'
+    file_path = 'log_data.csv'
     lat_goal = 35.924425
     lon_goal = 139.912890
 
