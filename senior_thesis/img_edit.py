@@ -19,6 +19,6 @@ if __name__ == "__main__":
 
     img = crop_center(img)
 
-    img = resize_img(img, 32, 32)
+    img = resize_img(img, 40, 40)
     cv2.imwrite('resized_img.jpg', img)
 
