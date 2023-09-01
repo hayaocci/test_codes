@@ -131,4 +131,6 @@ if __name__ == "__main__":
     original_img_path = 'ImageGuide-0153.jpg'
     original_img = cv2.imread(original_img_path)
 
+    t_start = time.time()
     detect_goal()
+    print(time.time() - t_start)

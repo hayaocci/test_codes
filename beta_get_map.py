@@ -52,7 +52,7 @@ def get_map(file_path, lat_goal, lon_goal):
 
         #座標のプロット
         plt.scatter(gps_lat[0], gps_lon[0], color="blue")
-        plt.quiver(gps_lat, gps_lon, cos_azimuth_array, sin_azimuth_array, color="red", width=0.003, edgecolor="black", scale=50)
+        plt.quiver(gps_lat, gps_lon, cos_azimuth_array, sin_azimuth_array, color="red", width=0.003, edgecolor="black", scale=20)
         plt.plot(gps_lat, gps_lon, label="Trajectory", linestyle="dashed", color="black")
         
         #スタート地点、ゴール地点、制御終了地点の座標の表示
@@ -63,9 +63,9 @@ def get_map(file_path, lat_goal, lon_goal):
         #地図の情報を表示
         arrow_dict = dict(arrowstyle="wedge", color="silver", connectionstyle="arc3")
         text_dict = text_dict = dict(boxstyle="round",fc="silver", ec="mediumblue")
-        plt.annotate("Target point" + "\n" + str(lat_goal) + ", "+ str(lon_goal) + ", "+ "altitude", xy=(lat_goal, lon_goal), xytext=(lim_x2 - 0.000100, lim_y2 - 0.000900), arrowprops=arrow_dict, bbox=text_dict)
-        plt.annotate("Control start point" + "\n" + str(gps_lat[0]) + ", "+ str(gps_lon[0]) + ", "+ "altitude", xy=(gps_lat[0], gps_lon[0]), xytext=(lim_x2 - 0.000100, lim_y2 - 0.000300), arrowprops=arrow_dict, bbox=text_dict)
-        plt.annotate("Control finish point" + "\n" + str(gps_lat[-1]) + ", "+ str(gps_lon[-1]) + ", "+ "altitude", xy=(gps_lat[-1], gps_lon[-1]), xytext=(lim_x2 - 0.000100, lim_y2 - 0.000600), arrowprops=arrow_dict, bbox=text_dict)
+        plt.annotate("Target point" + "\n" + str(lat_goal) + ", "+ str(lon_goal), xy=(lat_goal, lon_goal), xytext=(lim_x2 - 0.000100, lim_y2 - 0.000900), arrowprops=arrow_dict, bbox=text_dict)
+        plt.annotate("Control start point" + "\n" + str(gps_lat[0]) + ", "+ str(gps_lon[0]), xy=(gps_lat[0], gps_lon[0]), xytext=(lim_x2 - 0.000100, lim_y2 - 0.000300), arrowprops=arrow_dict, bbox=text_dict)
+        plt.annotate("Control finish point" + "\n" + str(gps_lat[-1]) + ", "+ str(gps_lon[-1]), xy=(gps_lat[-1], gps_lon[-1]), xytext=(lim_x2 - 0.000100, lim_y2 - 0.000600), arrowprops=arrow_dict, bbox=text_dict)
         
         #グリッドの表示
         plt.grid()
