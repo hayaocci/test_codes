@@ -100,7 +100,7 @@ def detect_goal():
     # original_img = cv2.imread(photoname)
 
     #original_img_path = './goal_imgs/ImageGuide-0002.jpg'
-    original_img = cv2.imread('photo0022.jpg')
+    original_img = cv2.imread('goal.JPG')
 
     #画像を圧縮
     small_img = mosaic(original_img, ratio=0.3)
