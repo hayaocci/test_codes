@@ -52,6 +52,7 @@ def get_map(file_path, lat_goal, lon_goal):
 
         #座標のプロット
         plt.scatter(gps_lat[0], gps_lon[0], color="blue")
+        # やじるしの描画
         plt.quiver(gps_lat, gps_lon, cos_azimuth_array, sin_azimuth_array, color="red", width=0.003, edgecolor="black", scale=20)
         plt.plot(gps_lat, gps_lon, label="Trajectory", linestyle="dashed", color="black")
         
